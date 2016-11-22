@@ -25,7 +25,7 @@
 #-asdf3.1 (error "WHOFIELDS requires ASDF 3.1 or later. Please upgrade your ASDF.")
 
 (asdf:defsystem "whofields"
-  :description "CL-WHO form field rendering and validation utilities"
+  :description "HTML field rendering and input validation utilities written in Common Lisp"
   :author "Michael J. Forster <mike@forsterfamily.ca>"
   :license "MIT"
   :version "0.0.1"
