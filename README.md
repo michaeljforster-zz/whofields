@@ -106,16 +106,16 @@ alists of parameter names and values.
              (:div :class "alert alert-danger" "Please correct the issues highlighted below.")))
          (:form :action "/registration" :method "post"
                 (dolist (fieldspec (subseq *register-fieldspecs* 2 9))
-                  (let ((name (whofields:fieldspec-name fieldspec))
-                        (label (whofields:fieldspec-label fieldspec)))
+                  (let ((name (whofields/core:fieldspec-name fieldspec))
+                        (label (whofields/core:fieldspec-label fieldspec)))
                     (cl-who:htm
                      (:div :class (if (member name fielderrs) "form-group has-error" "form-group")
                            (:label :for (string-downcase name) :class "control-label col-sm-2"
                                    (cl-who:esc label))
                            (:div :class "col-sm-10"
-                                 (whofields:render-field stream
-                                                         fieldspec
-                                                         (cdr (assoc name fieldvals))))))))
+                                 (whofields/core:render-field stream
+                                                              fieldspec
+                                                              (cdr (assoc name fieldvals))))))))
                 (:div :class "form-group"
                       (:div :class "col-sm-12"
                             (:button :type "submit" :class "btn btn-primary" "Register")))))))
@@ -125,8 +125,8 @@ alists of parameter names and values.
   (setf (hunchentoot:content-type*) "text/html; charset=utf-8")
   (cond ((equal (hunchentoot:request-method*) :post)
          (multiple-value-bind (fieldvals fielderrs)
-             (whofields:validate-fields *registration-fieldspecs*
-                                         (hunchentoot:post-parameters*))
+             (whofields/core:validate-fields *registration-fieldspecs*
+                                             (hunchentoot:post-parameters*))
            (unless (string= (hunchentoot:post-parameter "email")
                             (hunchentoot:post-parameter "email2"))
              (push 'email2 fielderrs))
