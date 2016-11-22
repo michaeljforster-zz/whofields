@@ -30,5 +30,54 @@
 
 (in-package "WHOFIELDS/TEST/ALL")
 
-(define-test foo
-    (assert-equal 'bar (foo)))
+(defun my-stringp (x)
+  (if (stringp x)
+      (values x t)
+      (values nil nil)))
+
+(defun text-fieldspec ()
+  (list 'my-text :text :validation-function #'my-stringp :label "MY-TEXT" :placeholder "MY-TEXT" :help-text "Enter MY-TEXT" :value ""))
+
+(defun password-fieldspec ()
+  (list 'my-password :password :validation-function #'my-stringp :label "MY-PASSWORD" :placeholder "MY-PASSWORD" :help-password "Enter MY-PASSWORD" :value ""))
+
+(defun select-fieldspec ()
+  (list 'my-select :select :options '((1 . "One") (2 . "Two") (3 . "Three")) :test #'eql :key #'car :label-function #'cdr :value 1))
+
+(defun radio-fieldspec ()
+  (list 'my-radio :radio :options '((1 . "One") (2 . "Two") (3 . "Three")) :test #'eql :key #'car :label-function #'cdr :value 1))
+
+(defun checkbox-fieldspec (truep)
+  (list 'my-checkbox :checkbox :truep truep))
+
+(define-test fieldspec-name
+  (assert-equal 'my-text (fieldspec-name (text-fieldspec))))
+
+(define-test fieldspec-label
+  (assert-equal "MY-TEXT" (fieldspec-label (text-fieldspec))))
+
+(define-test fieldspec-plist
+  (assert-equal (list :validation-function #'my-stringp :label "MY-TEXT" :placeholder "MY-TEXT" :help-text "Enter MY-TEXT" :value "")
+                (fieldspec-plist (text-fieldspec))))
+
+(define-test validate-text-field
+  (assert-equal '("FOO" t) (multiple-value-list (validate-field (text-fieldspec) "FOO")))
+  (assert-equal '(nil nil) (multiple-value-list (validate-field (text-fieldspec) 'foo))))
+
+(define-test validate-password-field
+  (assert-equal '("FOO" t) (multiple-value-list (validate-field (password-fieldspec) "FOO")))
+  (assert-equal '(nil nil) (multiple-value-list (validate-field (password-fieldspec) 'foo))))
+
+(define-test validate-select-field
+  (assert-equal '(2 t) (multiple-value-list (validate-field (select-fieldspec) 2)))
+  (assert-equal '(nil nil) (multiple-value-list (validate-field (select-fieldspec) 666))))
+
+(define-test validate-radio-field
+  (assert-equal '(3 t) (multiple-value-list (validate-field (radio-fieldspec) 3)))
+  (assert-equal '(nil nil) (multiple-value-list (validate-field (radio-fieldspec) 666))))
+
+(define-test validate-checkbox-field
+  (assert-equal '(t t) (multiple-value-list (validate-field (checkbox-fieldspec t) t)))
+  (assert-equal '(nil nil) (multiple-value-list (validate-field (checkbox-fieldspec t) nil)))
+  (assert-equal '(t t) (multiple-value-list (validate-field (checkbox-fieldspec nil) t)))
+  (assert-equal '(nil t) (multiple-value-list (validate-field (checkbox-fieldspec nil) nil))))

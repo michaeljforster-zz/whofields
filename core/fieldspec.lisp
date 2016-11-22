@@ -1,4 +1,4 @@
-;;;; core/all.lisp
+;;;; core/fieldspec.lisp
 
 ;;; The MIT License (MIT)
 ;;;
@@ -22,8 +22,22 @@
 ;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;;; SOFTWARE.
 
-(uiop:define-package "WHOFIELDS/CORE/ALL"
-  (:nicknames "WHOFIELDS/CORE")
-  (:use-reexport "WHOFIELDS/CORE/FIELDSPEC"
-                 "WHOFIELDS/CORE/RENDER"
-                 "WHOFIELDS/CORE/VALIDATE"))
+(defpackage "WHOFIELDS/CORE/FIELDSPEC"
+  (:use "CL")
+  (:export "FIELDSPEC-NAME"
+           "FIELDSPEC-LABEL"
+           "FIELDSPEC-PLIST"))
+
+(in-package "WHOFIELDS/CORE/FIELDSPEC")
+
+;;; fieldspec : (name type &rest args &key &allow-other-keys)
+
+(defun fieldspec-name (fieldspec)
+  (first fieldspec))
+
+(defun fieldspec-label (fieldspec)
+  (or (getf (cddr fieldspec) :label)
+      ""))
+
+(defun fieldspec-plist (fieldspec)
+  (cddr fieldspec))
