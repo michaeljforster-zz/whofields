@@ -85,7 +85,7 @@ alists of parameter names and values.
               :placeholder "Postal Code")
         (list 'agrees-to-mailing-list :label "I want to join the mailing list" :checkbox :truep t)))
 
-(defparameter *register-fieldvals*
+(defparameter *registration-fieldvals*
   (list (cons 'username "")
         (cons 'full-name "")
         (cons 'email "")
@@ -105,7 +105,7 @@ alists of parameter names and values.
            (cl-who:htm
              (:div :class "alert alert-danger" "Please correct the issues highlighted below.")))
          (:form :action "/registration" :method "post"
-                (dolist (fieldspec (subseq *register-fieldspecs* 2 9))
+                (dolist (fieldspec *registration-fieldspecs*)
                   (let ((name (whofields/core:fieldspec-name fieldspec))
                         (label (whofields/core:fieldspec-label fieldspec)))
                     (cl-who:htm
