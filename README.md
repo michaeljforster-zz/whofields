@@ -63,21 +63,26 @@ alists of parameter names and values.
     ("YT" . "Yukon")))
 
 (defparameter *registration-fieldspecs*
-  (list (list 'username :text :label "Corporation" :validation-function #'parse-non-empty-string :placeholder "Corporation")
-        (list 'full-name :text :label "Full Name" :validation-function #'parse-non-empty-string :placeholder "Full Name")
-        (list 'email :text :label "Email" :validation-function #'parse-non-empty-string :placeholder "Email")
-        (list 'email2 :text :label "Email (confirm)" :validation-function #'parse-non-empty-string :placeholder "Email (confirm)")
-        (list 'phone :text :label "Phone" :validation-function #'parse-non-empty-string :placeholder "Phone")
-        (list 'alt-phone :text :label "Alt. Phone" :validation-function #'parse-string :placeholder "Alt. Phone")
-        (list 'address :text :label "Address" :validation-function #'parse-non-empty-string :placeholder "Address")
-        (list 'city :text :label "City" :validation-function #'parse-non-empty-string :placeholder "City")
+  (list (list 'username :text :label "Corporation" :validation-function #'parse-non-empty-string
+              :placeholder "Corporation")
+        (list 'full-name :text :label "Full Name" :validation-function #'parse-non-empty-string
+              :placeholder "Full Name")
+        (list 'email :text :label "Email" :validation-function #'parse-non-empty-string
+               :placeholder "Email")
+        (list 'email2 :text :label "Email (confirm)" :validation-function #'parse-non-empty-string
+              :placeholder "Email (confirm)")
+        (list 'phone :text :label "Phone" :validation-function #'parse-non-empty-string
+              :placeholder "Phone")
+        (list 'alt-phone :text :label "Alt. Phone" :validation-function #'parse-string
+              :placeholder "Alt. Phone")
+        (list 'address :text :label "Address" :validation-function #'parse-non-empty-string
+              :placeholder "Address")
+        (list 'city :text :label "City" :validation-function #'parse-non-empty-string
+              :placeholder "City")
         (list 'province :select :label "Province"
-              :options *provinces*
-              :key #'car
-              :label-function #'cdr
-              :test #'string=
-              :value "")
-        (list 'postal-code :text :label "Postal Code" :validation-function #'parse-non-empty-string :placeholder "Postal Code")
+              :options *provinces* :key #'car :label-function #'cdr :test #'string=)
+        (list 'postal-code :text :label "Postal Code" :validation-function #'parse-non-empty-string
+              :placeholder "Postal Code")
         (list 'agrees-to-mailing-list :label "I want to join the mailing list" :checkbox :truep t)))
 
 (defparameter *register-fieldvals*
@@ -93,23 +98,47 @@ alists of parameter names and values.
         (cons 'postal-code "")
         (cons 'agrees-to-mailing-list nil)))
 
+(defun render-registration-page (fieldvals fielderrs &optional (stream *standard-output*))
+  (with-html-page (stream)
+    (:div :class "container"
+          (when fielderrs
+           (cl-who:htm
+             (:div :class "alert alert-danger" "Please correct the issues highlighted below.")))
+         (:form :action "/registration" :method "post"
+                (dolist (fieldspec (subseq *register-fieldspecs* 2 9))
+                  (let ((name (whofields:fieldspec-name fieldspec))
+                        (label (whofields:fieldspec-label fieldspec)))
+                    (cl-who:htm
+                     (:div :class (if (member name fielderrs) "form-group has-error" "form-group")
+                           (:label :for (string-downcase name) :class "control-label col-sm-2"
+                                   (cl-who:esc label))
+                           (:div :class "col-sm-10"
+                                 (whofields:render-field stream
+                                                         fieldspec
+                                                         (cdr (assoc name fieldvals))))))))
+                (:div :class "form-group"
+                      (:div :class "col-sm-12"
+                            (:button :type "submit" :class "btn btn-primary" "Register")))))))
+
 (hunchentoot:define-easy-handler (handle-registration :uri (princ-to-string "/registration"))
     ()
   (setf (hunchentoot:content-type*) "text/html; charset=utf-8")
   (cond ((equal (hunchentoot:request-method*) :post)
          (multiple-value-bind (fieldvals fielderrs)
-             (hunchentools:validate-fields *registration-fieldspecs*
-                                           (hunchentoot:post-parameters*))
+             (whofields:validate-fields *registration-fieldspecs*
+                                         (hunchentoot:post-parameters*))
            (unless (string= (hunchentoot:post-parameter "email")
                             (hunchentoot:post-parameter "email2"))
              (push 'email2 fielderrs))
            (if fielderrs
-               (render-registration-page fieldvals fielderrs)
+               (with-output-to-string (stream)
+                 (render-registration-page fieldvals fielderrs stream))
                (progn
                  (model:register fieldvals)
                  (hunchentoot:redirect "/registration-complete")))))
         ((equal (hunchentoot:request-method*) :get)
-         (render-registration-page *registration-fieldvals* '()))))
+         (with-output-to-string (stream)
+           (render-registration-page *registration-fieldvals* '() stream)))))
 ```
 
 ### License
