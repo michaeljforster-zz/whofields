@@ -29,6 +29,11 @@
 
 (in-package "WHOFIELDS/CORE/RENDER")
 
+(defun escape-value (value)
+  (if (null value)
+      ""
+      (cl-who:escape-string (princ-to-string value))))
+
 (defun render-text-input (stream
                           name
                           value

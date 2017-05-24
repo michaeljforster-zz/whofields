@@ -24,6 +24,7 @@
 
 (defpackage "WHOFIELDS/CORE/VALIDATE"
   (:use "CL")
+  (:import-from "WHOFIELDS/CORE/FIELDSPEC")
   (:export "VALIDATE-FIELD"
            "VALIDATE-FIELDS"))
 
@@ -69,7 +70,7 @@
     (let ((vals '())
           (errs '()))
       (dolist (fieldspec fieldspecs)
-        (let ((name (fieldspec-name fieldspec)))
+        (let ((name (whofields/core/fieldspec:fieldspec-name fieldspec)))
           (multiple-value-bind (val success-p)
               (validate-field fieldspec (fieldval name))
             (if success-p
