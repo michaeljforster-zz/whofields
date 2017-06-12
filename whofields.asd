@@ -28,7 +28,7 @@
   :description "HTML field rendering and input validation utilities written in Common Lisp"
   :author "Michael J. Forster <mike@forsterfamily.ca>"
   :license "MIT"
-  :version "0.0.1"
+  :version "0.1.0"
   :class :package-inferred-system
   :defsystem-depends-on ("asdf-package-system")
   :depends-on ("whofields/core/all")
