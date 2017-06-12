@@ -56,6 +56,7 @@
       fieldspec
     (declare (ignore name))
     (ecase type
+      (:static (values t t))
       (:text (apply #'validate-string value rest-args))
       (:password (apply #'validate-string value rest-args))
       (:select (apply #'validate-option value rest-args))

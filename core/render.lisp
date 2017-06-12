@@ -34,6 +34,13 @@
       ""
       (cl-who:escape-string (princ-to-string value))))
 
+(defun render-static (stream
+                      name
+                      value &key &allow-other-keys)
+  (declare (ignore name))
+  (cl-who:with-html-output (stream)
+    (:p :class "form-control-static" (cl-who:esc (escape-value value)))))
+
 (defun render-text-input (stream
                           name
                           value
@@ -92,6 +99,7 @@
   (destructuring-bind (name type &rest rest-args)
       fieldspec
     (ecase type
+      (:static (apply #'render-static stream (string-downcase name) value rest-args))
       (:text (apply #'render-text-input stream (string-downcase name) value rest-args))
       (:password (apply #'render-password-input stream (string-downcase name) value rest-args))
       (:select (apply #'render-select stream (string-downcase name) value rest-args))
