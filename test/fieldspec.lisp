@@ -1,4 +1,4 @@
-;;;; core/all.lisp
+;;;; test/fieldspec.lisp
 
 ;;; The MIT License (MIT)
 ;;;
@@ -22,8 +22,33 @@
 ;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;;; SOFTWARE.
 
-(uiop:define-package "WHOFIELDS/CORE/ALL"
-  (:nicknames "WHOFIELDS")
-  (:use-reexport "WHOFIELDS/CORE/FIELDSPEC"
-                 "WHOFIELDS/CORE/RENDER"
-                 "WHOFIELDS/CORE/VALIDATE"))
+(defpackage "WHOFIELDS/TEST/FIELDSPEC"
+  (:use "CL"
+        "LISP-UNIT")
+  (:import-from "WHOFIELDS/CORE/FIELDSPEC")
+  (:import-from "WHOFIELDS/TEST/SETUP")
+  (:export "FIELDSPEC-NAME"
+           "FIELDSPEC-LABEL"
+           "FIELDSPEC-PLIST"))
+
+(define-test fieldspec-name
+    (assert-equal
+     'my-text
+     (whofields/core/fieldspec:fieldspec-name
+      (whofields/test/setup:text-fieldspec))))
+
+(define-test fieldspec-label
+    (assert-equal
+     "MY-TEXT"
+     (whofields/core/fieldspec:fieldspec-label
+      (whofields/test/setup:text-fieldspec))))
+
+(define-test fieldspec-plist
+    (assert-equal
+     (list :validation-function #'whofields/test/setup:my-stringp
+           :label "MY-TEXT"
+           :placeholder "MY-TEXT"
+           :help-text "Enter MY-TEXT"
+           :value "")
+     (whofields/core/fieldspec:fieldspec-plist
+      (whofields/test/setup:text-fieldspec))))

@@ -1,4 +1,4 @@
-;;;; core/all.lisp
+;;;; test/setup.lisp
 
 ;;; The MIT License (MIT)
 ;;;
@@ -22,8 +22,31 @@
 ;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;;; SOFTWARE.
 
-(uiop:define-package "WHOFIELDS/CORE/ALL"
-  (:nicknames "WHOFIELDS")
-  (:use-reexport "WHOFIELDS/CORE/FIELDSPEC"
-                 "WHOFIELDS/CORE/RENDER"
-                 "WHOFIELDS/CORE/VALIDATE"))
+(defpackage "WHOFIELDS/TEST/SETUP"
+  (:use "CL")
+  (:export "MY-STRINGP"
+           "TEXT-FIELDSPEC"
+           "PASSWORD-FIELDSPEC"
+           "SELECT-FIELDSPEC"
+           "RADIO-FIELDSPEC"
+           "CHECKBOX-FIELDSPEC"))
+
+(defun my-stringp (x)
+  (if (stringp x)
+      (values x t)
+      (values nil nil)))
+
+(defun text-fieldspec ()
+  (list 'my-text :text :validation-function #'my-stringp :label "MY-TEXT" :placeholder "MY-TEXT" :help-text "Enter MY-TEXT" :value ""))
+
+(defun password-fieldspec ()
+  (list 'my-password :password :validation-function #'my-stringp :label "MY-PASSWORD" :placeholder "MY-PASSWORD" :help-password "Enter MY-PASSWORD" :value ""))
+
+(defun select-fieldspec ()
+  (list 'my-select :select :options '((1 . "One") (2 . "Two") (3 . "Three")) :test #'eql :key #'car :label-function #'cdr :value 1))
+
+(defun radio-fieldspec ()
+  (list 'my-radio :radio :options '((1 . "One") (2 . "Two") (3 . "Three")) :test #'eql :key #'car :label-function #'cdr :value 1))
+
+(defun checkbox-fieldspec (truep)
+  (list 'my-checkbox :checkbox :truep truep))

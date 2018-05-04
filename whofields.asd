@@ -32,12 +32,9 @@
   :class :package-inferred-system
   :defsystem-depends-on ("asdf-package-system")
   :depends-on ("whofields/core/all")
-  :in-order-to ((test-op (test-op "whofields/test"))))
+  :in-order-to ((test-op (test-op "whofields/test/all")))
+  :perform (test-op (o c)
+                    (uiop:symbol-call "WHOFIELDS/TEST/ALL" "RUN-TESTS")))
 
 (asdf:defsystem "whofields/test"
-  :depends-on ("whofields/test/all")
-  :perform (test-op (o c)
-                    (uiop:symbol-call "LISP-UNIT"
-                                      "RUN-TESTS"
-                                      :all
-                                      "WHOFIELDS/TEST/ALL")))
+  :depends-on ("whofields/test/all"))
