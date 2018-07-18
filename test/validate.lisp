@@ -25,80 +25,82 @@
 (defpackage "WHOFIELDS/TEST/VALIDATE"
   (:use "CL"
         "LISP-UNIT")
-  (:import-from "WHOFIELDS/CORE/VALIDATE")
+  (:import-from "WHOFIELDS")
   (:import-from "WHOFIELDS/TEST/SETUP")
-  (:export "VALIDATE-TEXT-FIELD"
-           "VALIDATE-PASSWORD-FIELD"
-           "VALIDATE-SELECT-FIELD"
-           "VALIDATE-RADIO-FIELD"
-           "VALIDATE-CHECKBOX-FIELD"))
+  (:export "TEST-VALIDATE-TEXT-FIELD"
+           "TEST-VALIDATE-PASSWORD-FIELD"
+           "TEST-VALIDATE-SELECT-FIELD"
+           "TEST-VALIDATE-RADIO-FIELD"
+           "TEST-VALIDATE-CHECKBOX-FIELD"))
 
-(define-test validate-text-field
+(in-package "WHOFIELDS/TEST/VALIDATE")
+
+(define-test test-validate-text-field
     (assert-equal
      '("FOO" t)
      (multiple-value-list
-      (whofields/core/validate:validate-field
+      (whofields:validate-field
        (whofields/test/setup:text-fieldspec) "FOO")))
   (assert-equal
    '(nil nil)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:text-fieldspec) 'foo))))
 
-(define-test validate-password-field
+(define-test test-validate-password-field
     (assert-equal
      '("FOO" t)
      (multiple-value-list
-      (whofields/core/validate:validate-field
+      (whofields:validate-field
        (whofields/test/setup:password-fieldspec) "FOO")))
   (assert-equal
    '(nil nil)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:password-fieldspec) 'foo))))
 
-(define-test validate-select-field
+(define-test test-validate-select-field
     (assert-equal
      '(2 t)
      (multiple-value-list
-      (whofields/core/validate:validate-field
+      (whofields:validate-field
        (whofields/test/setup:select-fieldspec) 2)))
   (assert-equal
    '(nil nil)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:select-fieldspec) 666))))
 
-(define-test validate-radio-field
+(define-test test-validate-radio-field
     (assert-equal
      '(3 t)
      (multiple-value-list
-      (whofields/core/validate:validate-field
+      (whofields:validate-field
        (whofields/test/setup:radio-fieldspec) 3)))
   (assert-equal
    '(nil nil)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:radio-fieldspec) 666))))
 
-(define-test validate-checkbox-field
+(define-test test-validate-checkbox-field
     (assert-equal
      '(t t)
      (multiple-value-list
-      (whofields/core/validate:validate-field
+      (whofields:validate-field
        (whofields/test/setup:checkbox-fieldspec t) t)))
   (assert-equal
    '(nil nil)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:checkbox-fieldspec t) nil)))
   (assert-equal
    '(t t)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:checkbox-fieldspec nil) t)))
   (assert-equal
    '(nil t)
    (multiple-value-list
-    (whofields/core/validate:validate-field
+    (whofields:validate-field
      (whofields/test/setup:checkbox-fieldspec nil) nil))))

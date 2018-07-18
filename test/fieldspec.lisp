@@ -25,30 +25,32 @@
 (defpackage "WHOFIELDS/TEST/FIELDSPEC"
   (:use "CL"
         "LISP-UNIT")
-  (:import-from "WHOFIELDS/CORE/FIELDSPEC")
+  (:import-from "WHOFIELDS")
   (:import-from "WHOFIELDS/TEST/SETUP")
-  (:export "FIELDSPEC-NAME"
-           "FIELDSPEC-LABEL"
-           "FIELDSPEC-PLIST"))
+  (:export "TEST-FIELDSPEC-NAME"
+           "TEST-FIELDSPEC-LABEL"
+           "TEST-FIELDSPEC-PLIST"))
 
-(define-test fieldspec-name
+(in-package "WHOFIELDS/TEST/FIELDSPEC")
+
+(define-test test-fieldspec-name
     (assert-equal
-     'my-text
-     (whofields/core/fieldspec:fieldspec-name
+     whofields/test/setup::'my-text
+     (whofields:fieldspec-name
       (whofields/test/setup:text-fieldspec))))
 
-(define-test fieldspec-label
+(define-test test-fieldspec-label
     (assert-equal
      "MY-TEXT"
-     (whofields/core/fieldspec:fieldspec-label
+     (whofields:fieldspec-label
       (whofields/test/setup:text-fieldspec))))
 
-(define-test fieldspec-plist
+(define-test test-fieldspec-plist
     (assert-equal
      (list :validation-function #'whofields/test/setup:my-stringp
            :label "MY-TEXT"
            :placeholder "MY-TEXT"
            :help-text "Enter MY-TEXT"
            :value "")
-     (whofields/core/fieldspec:fieldspec-plist
+     (whofields:fieldspec-plist
       (whofields/test/setup:text-fieldspec))))

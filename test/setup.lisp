@@ -31,6 +31,8 @@
            "RADIO-FIELDSPEC"
            "CHECKBOX-FIELDSPEC"))
 
+(in-package "WHOFIELDS/TEST/SETUP")
+
 (defun my-stringp (x)
   (if (stringp x)
       (values x t)
